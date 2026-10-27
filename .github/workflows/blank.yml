@@ -1,0 +1,29 @@
+name: Build LeonTap iOS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Show project files
+        run: |
+          echo "Files in repository:"
+          find . -maxdepth 3 -type f
+
+      - name: Check Xcode
+        run: xcodebuild -version
+
+      - name: Check project configuration
+        run: |
+          if [ -f project.yml ]; then
+            cat project.yml
+          else
+            echo "ERROR: project.yml not found in repository root"
+            exit 1
+          fi

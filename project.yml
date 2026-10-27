@@ -1,23 +1,26 @@
 name: LeonLoader
 options:
-  bundleIdPrefix: com.leonloader
+  bundleIdPrefix: com.leon
   deploymentTarget:
     iOS: "16.0"
+
 targets:
   LeonLoader:
     type: application
     platform: iOS
     sources:
-      - path: LeonLoader
+      - path: .
+        excludes:
+          - .github
+          - project.yml
+          - README_RU.md
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.leonloader.app
-        PRODUCT_NAME: LEON
-        INFOPLIST_KEY_CFBundleDisplayName: LEON Loader
-        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.utilities
-        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.leon.loader
+        PRODUCT_NAME: LeonLoader
         SWIFT_VERSION: "5.0"
-        IPHONEOS_DEPLOYMENT_TARGET: "16.0"
         TARGETED_DEVICE_FAMILY: "1,2"
-        CODE_SIGN_STYLE: Manual
-        CODE_SIGNING_ALLOWED: NO
+        IPHONEOS_DEPLOYMENT_TARGET: "16.0"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: LeonLoader
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES

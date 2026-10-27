@@ -1,4 +1,5 @@
-name: Build LeonTap iOS
+
+name: Build LeonTap IPA
 
 on:
   workflow_dispatch:
@@ -6,24 +7,39 @@ on:
 jobs:
   build:
     runs-on: macos-latest
-
     steps:
-      - name: Checkout repository
+      - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Show project files
-        run: |
-          echo "Files in repository:"
-          find . -maxdepth 3 -type f
+      - name: Install XcodeGen
+        run: brew install xcodegen
 
-      - name: Check Xcode
-        run: xcodebuild -version
+      - name: Generate Xcode project
+        run: xcodegen generate
 
-      - name: Check project configuration
+      - name: Build iOS app
         run: |
-          if [ -f project.yml ]; then
-            cat project.yml
-          else
-            echo "ERROR: project.yml not found in repository root"
-            exit 1
-          fi
+          xcodebuild \
+            -project LeonLoader.xcodeproj \
+            -scheme LeonLoader \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Package IPA
+        run: |
+          mkdir -p output
+          APP_PATH=$(find build/Build/Products/Release-iphoneos -maxdepth 1 -name '*.app' -print -quit)
+          test -n "$APP_PATH"
+          mkdir Payload
+          cp -R "$APP_PATH" Payload/
+          zip -r output/LeonTap-unsigned.ipa Payload
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: LeonTap-unsigned-IPA
+          path: output/LeonTap-unsigned.ipa
